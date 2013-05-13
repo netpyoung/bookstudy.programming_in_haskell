@@ -49,8 +49,48 @@ test_generator =
 -- Cases: 1  Tried: 0  Errors: 0  Failures: 0
 ```
 ## 06. 되도는 함수
+recursion
+
+ - 아는내용.
+
+
+```haskell
+qsort :: Ord a => [a] -> [a]
+qsort [] = []
+qsort (x:xs) = qsort smaller ++ [x] ++ qsort bigger
+               where
+                 smaller = [a | a <- xs, a <= x]
+                 bigger = [b | b <- xs, b > x]
+
+```
 
 ## 07. 함수를 주고받는 함수
+* higher-order
+* curring
+
+http://en.wikipedia.org/wiki/Fold_(higher-order_function)
+
+### foldr - right
+```haskell
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr f v [] = v
+foldr f v (x:xs) = f x (foldr f v xs)
+```
+
+foldr (+) 0 = (1 + (2 + (3 + 0)))
+
+### foldl - left
+```haskell
+foldl :: (a -> b -> a) -> a -> [b] -> a
+foldl f v [] = v
+foldl f v (x:xs) = foldl f (f v x) xs
+```
+
+foldl (+) 0 =(((0 + 1) + 2) + 3)
+
+
+- 아 역시 이 부분이 어렵네..
+- map까지는 구상이되는데 foldr, foldl, unfold들어가니 점점 산으로..
 
 ## 08. 함수형 문법 분석기
 
@@ -64,6 +104,8 @@ test_generator =
 
 ## 13. 프로그램에 대한 논리적 증명
 
+## 정리.
+:TODO
 
 # Emacs 단축키
  - `C-cz` : Inf 모드로 진입.
@@ -73,6 +115,8 @@ test_generator =
 # 참고자료.
  - [저자-사이트]
  - [역자-사이트]
+
+http://davidtran.doublegifts.com/blog/?cat=7
 
  [저자-사이트]: http://www.cs.nott.ac.uk/~gmh/book.html
  [역자-사이트]: http://pl.pusan.ac.kr/~haskell/wiki/
