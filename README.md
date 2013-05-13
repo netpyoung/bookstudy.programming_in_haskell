@@ -6,6 +6,8 @@ bookstudy.programming_in_haskell
 ## 배우게된 동기.
  * [LISP 사용자모임]에서 [Haskell 스터디 모임 준비](http://cafe.naver.com/lisper/1852)라는 글이 올라와서, 함 해보기로함.
 
+## 셋팅
+ * https://github.com/netpyoung/netpyoung.Notes/blob/master/enviroment-setting/setting-haskell/emacs-haskell-win.md
 
 ## 01. 소개
  - 소제목 그대로, 이 책에 대한 전반적인 소개 및 하스켈 역사에 대해 간략하게 나옴.
