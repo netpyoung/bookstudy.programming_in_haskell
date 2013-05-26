@@ -95,8 +95,32 @@ foldl (+) 0 =(((0 + 1) + 2) + 3)
 - map까지는 구상이되는데 foldr, foldl, unfold들어가니 점점 산으로..
 
 ## 08. 함수형 문법 분석기
+- 이번장부터 급 난이도 상승??
+
+
+```haskell
+return :: a -> Parser a
+return v = \inp -> [(v, inp)]
+
+return v inp = [(v, inp)]
+-- inp를 람다식을 써서 몸체 안으로 돌리는 것이, 그 타입 a -> Parser a에서 볼 수 있듯, 하나의 인자를 받아 문법 분석기를 돌려주는 함수임을 드러나 보이게 한다는 점에서는 더 좋다.
+```
+
+* `모나드`는 무엇인가?
+* `do`는 무엇인가?
+* `module Parsing where`은?
+ - 모듈 이름을 `Parsing`이라 정한 것임.
+* `import`도 햇갈뎌
+* `infixr 5 +++`는 무얼 의미하는가?
+ - `+++`연산자가 오른쪽에서부터 묶이며, 우선순위단계가 5라는 것을 지정함.
+* `newtype`키워드는?
+ - 항수가 1인 생성자 하나만을 갖는 타입을 좀 더 효율적으로 처리하기 위한 하스켈 기능.
+* `instance Monad Parser where`와 `instance MonadPlus Parser where`의 차이점?
+
+
 
 ## 09. 대화식 프로그램
+딱히 별 어려움 없음.
 
 ## 10. 타입과 클래스 선언
 
