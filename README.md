@@ -117,12 +117,61 @@ return v inp = [(v, inp)]
  - 항수가 1인 생성자 하나만을 갖는 타입을 좀 더 효율적으로 처리하기 위한 하스켈 기능.
 * `instance Monad Parser where`와 `instance MonadPlus Parser where`의 차이점?
 
-
-
 ## 09. 대화식 프로그램
 딱히 별 어려움 없음.
 
 ## 10. 타입과 클래스 선언
+
+* type선언: 기존에 존재하는 타입에 새로운 이름을 붙여주는 것. (되돌아 정의할 수 없음)
+* data선언: 새로운 타입을 정의. (되돌아 정의할 수 있음)
+
+```haskell
+type Pos   = (Int, Int)
+type Trans = Pos -> Pos
+
+data Bool = False | True
+data Nat  = Zero | Succ Nat
+```
+
+* class선언:
+* instance선언: data로 정의된 것만, class instance로 선언할 수 있다.
+
+```haskell
+class Eq a where
+  (==), (/=) :: a -> a -> Bool
+  x /= y = not (x == y)
+  x == y = not (x /= y)
+
+instance Eq Bool where
+  False == False = True
+  True  == True  = True
+  _     == _     = False
+
+class Eq a => Ord a where
+  (<), (<=), (>), (>=) :: a -> a -> Bool
+  min, max :: a -> a
+  min x y | x <= y    = x
+          | otherwise = y
+  max x y | x >= y    = x
+          | otherwise = y
+
+instance Ord Bool where
+  False <  True = True
+  _     <  _    = False
+  b     <= c    = (b < c) && (b == c)
+  b     >  c    = c < b
+  b     >= c    = c <= b
+
+data Bool = False | True deriving (Eq, Ord, Show, Read)
+```
+
+* 모나드 : 다른 타입을 인자로 받는 타입.
+
+```hasekll
+class Monad m where
+  return :: a -> m b
+  (>>=)  :: m a -> (a -> m b) -> m b
+```
 
 ## 11. 카운트다운 문제
 
@@ -132,6 +181,9 @@ return v inp = [(v, inp)]
 
 ## 정리.
 :TODO
+
+# 느낀점.
+- 개인적으로 느끼는 이 책의 주요 장은 8장과 10장인듯...
 
 # Emacs 단축키
  - `C-cz` : Inf 모드로 진입.
