@@ -4,9 +4,9 @@ data Op = Add | Sub | Mul | Div
 -- 연산을 적용할 수 있는지 검증.
 valid :: Op -> Int -> Int -> Bool
 valid Add _ _ = True
-valid Sub x y = x > y
+valid Sub x y = (x > y)
 valid Mul _ _ = True
-valid Div x y = x `mod` y == 0
+valid Div x y = (x `mod` y == 0)
 
 -- 연산을 적용.
 apply :: Op -> Int -> Int -> Int
@@ -94,27 +94,55 @@ solutions :: [Int] -> Int -> [Expr]
 solutions ns n = [e | ns' <- choices ns
                     , e <- exprs ns'
                     , eval e == [n]]
+-- solutions [1,3,7,10,25,50] 765
 
 --
 -- 생성하면서 풀기.
+-- 뺄셈과 나눗셈의 결과가 항상 양의 정수가 아니라는 점에, 제한을 둠.
+
 type Result = (Expr, Int)
 
 results :: [Int] -> [Result]
 results [] = []
 results [n] = [(Val n, n) | n > 0]
-results ns = [res | (lr, rs) <- split ns
-                  , lx <- result ls
-                  , ry <- result rs
+results ns = [res | (ls, rs) <- split ns
+                  , lx <- results ls
+                  , ry <- results rs
                   , res <- combine' lx ry]
 
 combine' :: Result -> Result -> [Result]
 combine' (l,x)(r,y) = [(App o l r, apply o x y) | o <- ops
                                                 , valid o x y]
 
-solution' :: [Int] -> Int -> [Expr]
-solution' ns n = [e | ns' <- choices ns
-                    , [e, m] <- results ns'
-                    , m == n]
+solutions' :: [Int] -> Int -> [Expr]
+solutions' ns n = [e | ns' <- choices ns
+                     , (e, m) <- results ns'
+                     , m == n]
+-- solutions' [1,3,7,10,25,50] 765
 
 --
 -- 대수적 성질 이용해서 풀기.
+-- 수학적으로 3+2와 2+3이 같다는 점에, 제한을 둠.
+
+valid' :: Op -> Int -> Int -> Bool
+valid' Add x y = (x <= y)
+valid' Sub x y = (x > y)
+valid' Mul x y = (x /= 1 && y /= 1 && x <= y)
+valid' Div x y = (y /= 1 && ((x `mod` y) == 0))
+
+results' :: [Int] -> [Result]
+results' []  = []
+results' [n] = [(Val n, n) | n > 0]
+results' ns  = [res | (ls, rs) <- split ns
+                    , lx <- results' ls
+                    , ry <- results' rs
+                    , res <- combine'' lx ry]
+
+combine'' :: Result -> Result -> [Result]
+combine'' (l,x) (r,y) = [(App o l r, apply o x y) | o <- ops, valid' o x y]
+
+solutions'' :: [Int] -> Int -> [Expr]
+solutions'' ns n = [e | ns' <- choices ns
+                      , (e,m) <- results' ns'
+                      , m == n]
+
