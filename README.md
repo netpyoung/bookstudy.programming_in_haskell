@@ -194,13 +194,83 @@ class Monad m where
 
 ## 12. 느그한 계산법
 
+### lazy evaluation
+```haskell
+inf :: Int
+inf = 1 + inf
+
+-- fst (0, inf)
+-- => 0
+```
+
+- 인자를 먼저 계산하였다면 무한루프에 빠졌을 것임.
+- 함수 먼저 계산했기에, 무한루프에 빠지지않고 0을 반환.
+- 함수를 먼저 계산시에는, 인자계산을 여러번하게될 수 도 있는데, 하스켈에선 인자계산을 공유하는 방식으로 풀어나감. 이것이 바로 lazy!!!
+
+### modular
+
+```haskell
+--
+-- 데이터와 제어가 나뉨.
+
+-- 데이터.
+ones :: [Int]
+ones = 1 : ones
+
+-- 제어
+take :: Int -> [a] -> [a]
+take 0     _      = []
+take (n+1) []     = []
+take (n+1) (x:xs) = x : take n xs
+
+-- take 3 ones
+-- => [1,1,1]
+
+--
+-- 데이터와 제어가 묶여버림.
+replicate :: Int -> a -> [a]
+replicate 0     _ = []
+replicate (n+1) x = x : replicate n x
+
+-- replicate 3 1
+-- => [1,1,1]
+```
+
+### strict application
+
+- `(f $! x) y`    : x의 최상위 단계 계산을 강제.
+- `(f x) $! y`    : y의 최상위 단계 계산을 강제.
+- `(f $! x) $! y` : x와 y의 최상위 단계 계산을 강제.
+
+```haskell
+sumwith :: Int -> [Int] -> Int
+sumwith v [] = v
+sumwith v (x:xs) = (sumwith $! (v + x)) xs
+
+-- sumwith 0 [1..100000]
+-- => 5000050000
+```
+
 ## 13. 프로그램에 대한 논리적 증명
 
-## 정리.
-:TODO
+```haskell
+-- xs의 길이가 n일때, sigma(1~n+1) = (n+1)*(n+2)/2만큼 계산야함. O(n^2)
+reverse :: [a] -> [a]
+reverse []     = []
+reverse (x:xs) = reverse xs ++ [x]
+
+-- xs의 길이가 n일때, n+1만큼 계산함. : O(n)
+reverse' :: [a] -> [a] -> [a]
+reverse' []     ys = ys
+reverse' (x:xs) ys = reverse' xs (x:ys)
+
+reverse'' :: [a] -> [a]
+reverse'' xs = reverse' xs []
+```
 
 # 느낀점.
-- 추천: 8장, 10장, 11장....
+- 강추 : 8장, 10장, 11장....
+- 드디어 1독 완료? 힘들다 ㅎㅎ.
 
 # Emacs 단축키
  - `C-cz` : Inf 모드로 진입.
@@ -210,8 +280,7 @@ class Monad m where
 # 참고자료.
  - [저자-사이트]
  - [역자-사이트]
-
-http://davidtran.doublegifts.com/blog/?cat=7
+ - 양키! 7장까지 연습문제 풀이 블로그 : http://davidtran.doublegifts.com/blog/?cat=7
 
  [저자-사이트]: http://www.cs.nott.ac.uk/~gmh/book.html
  [역자-사이트]: http://pl.pusan.ac.kr/~haskell/wiki/
