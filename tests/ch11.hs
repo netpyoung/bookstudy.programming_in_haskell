@@ -1,4 +1,4 @@
--- 연산자를 정의.
+-- Op. 연산자를 정의.
 data Op = Add | Sub | Mul | Div
 
 -- 연산을 적용할 수 있는지 검증.
@@ -15,8 +15,23 @@ apply Sub x y = x - y
 apply Mul x y = x * y
 apply Div x y = x `div` y
 
--- 표현식을 정의.
+-- Expr. 표현식을 정의.
 data Expr = Val Int | App Op Expr Expr
+
+
+-- Show for Op, Expr
+instance Show Op where
+  show Add = "+"
+  show Sub = "-"
+  show Mul = "*"
+  show Div = "/"
+
+instance Show Expr where
+  show (Val n)     = show n
+  show (App o l r) = bracket l ++ show o ++ bracket r
+    where
+      bracket (Val n) = show n
+      bracket e       = "(" ++ show e ++ ")"
 
 -- -- 식이 가지는 값을 리스트로 반환.
 values :: Expr -> [Int]
@@ -79,5 +94,27 @@ solutions :: [Int] -> Int -> [Expr]
 solutions ns n = [e | ns' <- choices ns
                     , e <- exprs ns'
                     , eval e == [n]]
+
+--
 -- 생성하면서 풀기.
+type Result = (Expr, Int)
+
+results :: [Int] -> [Result]
+results [] = []
+results [n] = [(Val n, n) | n > 0]
+results ns = [res | (lr, rs) <- split ns
+                  , lx <- result ls
+                  , ry <- result rs
+                  , res <- combine' lx ry]
+
+combine' :: Result -> Result -> [Result]
+combine' (l,x)(r,y) = [(App o l r, apply o x y) | o <- ops
+                                                , valid o x y]
+
+solution' :: [Int] -> Int -> [Expr]
+solution' ns n = [e | ns' <- choices ns
+                    , [e, m] <- results ns'
+                    , m == n]
+
+--
 -- 대수적 성질 이용해서 풀기.
