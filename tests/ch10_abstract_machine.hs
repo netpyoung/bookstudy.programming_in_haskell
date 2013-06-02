@@ -17,4 +17,3 @@ exec (ADD n : c)  m = exec c (n + m)
 
 value e :: Expr -> Int
 value e = eval e []
-

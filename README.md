@@ -118,7 +118,8 @@ return v inp = [(v, inp)]
 * `instance Monad Parser where`와 `instance MonadPlus Parser where`의 차이점?
 
 ## 09. 대화식 프로그램
-딱히 별 어려움 없음.
+- 딱히 별 어려움 없음.
+- 설정만 좀 까다로울뿐?
 
 ## 10. 타입과 클래스 선언
 
@@ -147,6 +148,7 @@ instance Eq Bool where
   True  == True  = True
   _     == _     = False
 
+-- class Ord를 =>를 이용, 확장시켰다.
 class Eq a => Ord a where
   (<), (<=), (>), (>=) :: a -> a -> Bool
   min, max :: a -> a
@@ -158,22 +160,37 @@ class Eq a => Ord a where
 instance Ord Bool where
   False <  True = True
   _     <  _    = False
-  b     <= c    = (b < c) && (b == c)
+  b     <= c    = (b < c) || (b == c)
   b     >  c    = c < b
   b     >= c    = c <= b
 
+-- data Bool을 deriving을 이용, instance를 유도했다.
 data Bool = False | True deriving (Eq, Ord, Show, Read)
 ```
 
 * 모나드 : 다른 타입을 인자로 받는 타입.
 
-```hasekll
+```haskell
 class Monad m where
   return :: a -> m b
   (>>=)  :: m a -> (a -> m b) -> m b
 ```
 
 ## 11. 카운트다운 문제
+- 인자: 여러개의 수들, 목표로하는 결과 값
+- 반환: 여러개의 수들을 조합하여, 목표로하는 결과값이 나올수 있는지 여부.
+- 조건:
+ - 덧셈, 뺄셈, 곱셈, 나눗셈 괄호식을 이용
+ - 주어진 숫자들은 한번씩만 써야함.
+ - 양의 정수만 가능(음수나, 0, 분수가 나와서는 안됨.)
+
+---------
+
+- 접근법이 좀 신기하다.
+ - bottom-up방식이긴한데,
+ - 연산자, 표현식이라는 데이터를 정의해서 문제를 풀어나감.
+
+- 내가볼땐, 이 책은 절때 프로그래밍 입문서로하면 안될듯 -_-; 러닝커브가 급격함.
 
 ## 12. 느그한 계산법
 
@@ -183,7 +200,7 @@ class Monad m where
 :TODO
 
 # 느낀점.
-- 개인적으로 느끼는 이 책의 주요 장은 8장과 10장인듯...
+- 추천: 8장, 10장, 11장....
 
 # Emacs 단축키
  - `C-cz` : Inf 모드로 진입.
